@@ -9,12 +9,14 @@ export default () => {
             }}
         >
             <EllipsisText
+                dynamic
                 value={
                     '我是很长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长的文本'
                 }
                 maxWidth={200}
             />
             <EllipsisText
+                dynamic
                 value={
                     '我是很长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长的文本'
                 }

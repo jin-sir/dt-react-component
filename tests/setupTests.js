@@ -32,6 +32,7 @@ Object.defineProperty(window, 'IntersectionObserver', {
 window.ResizeObserver = class ResizeObserver {
     constructor() {}
     observe() {}
+    unobserve() {}
     disconnect() {}
 };
 

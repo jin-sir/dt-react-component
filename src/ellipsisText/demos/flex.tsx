@@ -11,6 +11,7 @@ export default () => {
                 }}
             >
                 <EllipsisText
+                    dynamic
                     value={
                         '我是很长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长的文本'
                     }
@@ -25,6 +26,7 @@ export default () => {
             >
                 我是来捣乱的
                 <EllipsisText
+                    dynamic
                     value={
                         '我是很长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长的文本'
                     }

@@ -13,6 +13,7 @@ import EllipsisText from '../index';
 
 const defaultProps = {
     value: '我是很长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长的文本',
+    dynamic: true,
 };
 
 let wrapper: RenderResult, element;
@@ -192,5 +193,31 @@ describe('test ellipsis text if set max width', () => {
         expect(getAllByText(value).length).toBe(1);
 
         fireEvent.mouseLeave(element);
+    });
+});
+
+describe('use Typography by default (dynamic not set)', () => {
+    afterEach(() => {
+        cleanup();
+    });
+
+    test('renders antd Typography.Text instead of the measured span', () => {
+        const { container, getByText } = render(<EllipsisText {...defaultProps} dynamic={false} />);
+        const { value } = defaultProps;
+
+        expect(getByText(value)).toBeInTheDocument();
+        expect(getByText(value).className.split(' ')).toContain('ant-typography');
+        expect(container.querySelector('.dtc-ellipsis-text')).toBeNull();
+    });
+
+    test('renders Typography.Text when dynamic prop is omitted', () => {
+        const { container } = render(<EllipsisText value="省略 dynamic 时的默认渲染" />);
+        expect(container.querySelector('.ant-typography')).not.toBeNull();
+        expect(container.querySelector('.dtc-ellipsis-text')).toBeNull();
+    });
+
+    test('renders content when value is a function', () => {
+        const { getByText } = render(<EllipsisText value={() => '函数返回值'} dynamic={false} />);
+        expect(getByText('函数返回值')).toBeInTheDocument();
     });
 });

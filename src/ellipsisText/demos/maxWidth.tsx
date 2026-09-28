@@ -21,6 +21,7 @@ export default () => {
             </Radio.Group>
             <Divider />
             <EllipsisText
+                dynamic
                 value={
                     '我是很长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长的文本'
                 }

@@ -103,7 +103,7 @@ const Catalogue = <U extends Record<string, any> = {}, T extends readOnlyTab = a
         return (
             <div className="tree__title">
                 <div className="tree__title--text">
-                    <EllipsisText value={item.title} watchParentSizeChange maxWidth="100%" />
+                    <EllipsisText value={item.title} dynamic maxWidth="100%" />
                 </div>
                 {edit && renderNodeHover(item)}
             </div>

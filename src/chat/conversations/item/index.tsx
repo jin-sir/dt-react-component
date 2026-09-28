@@ -44,7 +44,7 @@ const Item: React.FC<ConversationsItemProps> = (props) => {
             {info.icon && <div className={`${prefixCls}__item__icon`}>{info.icon}</div>}
             <div className={`${prefixCls}__item__title`}>
                 <EllipsisText
-                    watchParentSizeChange
+                    dynamic
                     value={info.title}
                     placement="right"
                     maxWidth="100%"

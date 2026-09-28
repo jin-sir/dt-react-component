@@ -1,10 +1,9 @@
-import React, { ReactNode, useCallback } from 'react';
-import { Tooltip } from 'antd';
+import React, { ReactNode } from 'react';
+import { Typography } from 'antd';
 import { AbstractTooltipProps, RenderFunction } from 'antd/lib/tooltip';
-import classNames from 'classnames';
+import { omit } from 'lodash-es';
 
-import Resize from '../resize';
-import useEllipsisTextStyle from './useEllipsisTextStyle';
+import MeasureEllipsis from './measureEllipsis';
 import { DEFAULT_MAX_WIDTH } from './utils';
 import './style.scss';
 
@@ -29,9 +28,11 @@ export interface IEllipsisTextProps extends AbstractTooltipProps {
      */
     maxWidth?: string | number;
     /**
-     * 监听父元素大小的改变
+     * 是否启用动态测量计算宽度。
+     * true：通过测量计算判断文本是否溢出（支持 maxWidth/Tooltip 透传），并自动监听容器尺寸变化重测；
+     * false（默认）：使用 antd Typography.Text 的 ellipsis 做轻量省略。
      */
-    watchParentSizeChange?: boolean;
+    dynamic?: boolean;
     /**
      * antd Tooltip
      */
@@ -39,37 +40,35 @@ export interface IEllipsisTextProps extends AbstractTooltipProps {
 }
 
 const EllipsisText = (props: IEllipsisTextProps) => {
-    const {
-        value,
-        title = value,
-        className,
-        maxWidth,
-        watchParentSizeChange = false,
-        ...otherProps
-    } = props;
-    const [ref, isOverflow, style, onResize] = useEllipsisTextStyle(value, maxWidth);
+    const { dynamic = false } = props;
 
-    const observerEle =
-        watchParentSizeChange && ref.current?.parentElement ? ref.current?.parentElement : null;
+    if (dynamic) {
+        // dynamic 仅用于上层分流，交给测量组件前剔除，避免透传到 Tooltip
+        return <MeasureEllipsis {...(omit(props, ['dynamic']) as IEllipsisTextProps)} />;
+    }
 
-    const renderText = useCallback(() => {
-        return (
-            <span ref={ref} className={classNames('dtc-ellipsis-text', className)} style={style}>
-                {typeof value === 'function' ? value() : value}
-            </span>
+    const { value, title = value, className, maxWidth, ...restProps } = props;
+
+    // maxWidth 仅 dynamic 分支生效，未开启时开发态提示
+    if (maxWidth && process.env.NODE_ENV !== 'production') {
+        console.warn(
+            '[EllipsisText] `maxWidth` 仅在开启 `dynamic` 时生效；当前未传 `dynamic`，该参数将被忽略。'
         );
-    }, [style, value]);
+    }
+
+    const content = typeof value === 'function' ? value() : value;
+    const tooltipContent = typeof title === 'function' ? title() : title;
+
+    // 其余 props 视为 Tooltip 配置透传，dynamic 剔除
+    const tooltipProps = omit(restProps, ['dynamic']);
 
     return (
-        <Resize onResize={onResize} observerEle={observerEle}>
-            {isOverflow ? (
-                <Tooltip title={title} mouseEnterDelay={0} mouseLeaveDelay={0} {...otherProps}>
-                    {renderText()}
-                </Tooltip>
-            ) : (
-                renderText()
-            )}
-        </Resize>
+        <Typography.Text
+            className={className}
+            ellipsis={{ tooltip: { title: tooltipContent, ...tooltipProps } }}
+        >
+            {content}
+        </Typography.Text>
     );
 };
 

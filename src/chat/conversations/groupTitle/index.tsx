@@ -14,7 +14,7 @@ const GroupTitle: React.FC<GroupTitleProps> = (props) => {
                     maxWidth="100%"
                     placement="right"
                     destroyTooltipOnHide
-                    watchParentSizeChange
+                    dynamic
                 />
             )}
         </div>

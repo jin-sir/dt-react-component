@@ -84,7 +84,15 @@ export const getRangeWidth = (ele: HTMLElement): number => {
  * @return {*}
  */
 export const getActualWidth = (ele: HTMLElement) => {
-    const width = ele.getBoundingClientRect().width;
+    /**
+     * 优先使用 getBoundingClientRect().width 获取精确的渲染宽度；
+     * 当其为 0 时回退用 offsetWidth 兜底。getBoundingClientRect 会反映 CSS transform，
+     * 而 offsetWidth 不会——因此在 Select 下拉展开/收起的 transform 收缩动画期间
+     * （rect 被缩放为 0、元素仍占据布局宽度）能兜底取到真实宽度。
+     * 注意：display:none 时 offsetWidth 同样为 0，该兜底对此场景无效。
+     */
+    const rectWidth = ele.getBoundingClientRect().width;
+    const width = rectWidth > 0 ? rectWidth : ele.offsetWidth;
     const paddingLeft = getNumTypeStyleValue(ele, 'paddingLeft');
     const paddingRight = getNumTypeStyleValue(ele, 'paddingRight');
 
