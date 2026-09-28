@@ -3,6 +3,7 @@ export interface NewHTMLElement extends HTMLElement {
 }
 type Nullable<T> = T | undefined | null;
 
+export const MIN_WIDTH = 0;
 export const DEFAULT_MAX_WIDTH = 120;
 
 /**
@@ -142,12 +143,11 @@ export const getTextContainerWidth = (
     } else {
         // 获取 ref 元素占的宽度前，需要把 ref 元素隐藏，以免影响父级宽度计算
         textNode.style.display = 'none';
-        const availableWidth = getAvailableWidth(container);
-        containerWidth = availableWidth < 0 ? 0 : availableWidth;
+        containerWidth = getAvailableWidth(container);
         textNode.style.display = 'inline-block';
     }
 
-    return containerWidth;
+    return Math.max(MIN_WIDTH, containerWidth);
 };
 
 /**
